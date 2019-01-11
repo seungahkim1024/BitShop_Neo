@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import command.Command;
 import domain.MemberBean;
@@ -54,14 +55,13 @@ public class MemberController extends HttpServlet {
 			action = "move";
 		}  = (action==null) ? "move":action   
 		*/
+		HttpSession session = request.getSession();
 		switch(cmd) {
 		case "login":
 			System.out.println("로그인 진입");
 			MemberBean memberBean = null;
 			String id = request.getParameter("uid");
-			System.out.println("id==="+id);
 			String pass = request.getParameter("upw");
-			System.out.println("pass===="+pass);
 			memberBean=memberService.findMemberById(id);
 			//memberBean=MemberServiceImpl.getInstance().findMemberById(id);
 			System.out.println("memberBean======"+memberBean);
@@ -69,13 +69,13 @@ public class MemberController extends HttpServlet {
 			System.out.println("ok======="+ok);
 			if(ok) {
 				dir = "home";
-				dest = "welcome";
 			}else {
 				dir = "";
 				page = "index";
 				dest = "";
 			}
-			request.setAttribute("member", memberBean);
+			session.setAttribute("user", memberBean); // 충돌날 수 있어서 이름을 member에서 user로 바꿈.
+			request.setAttribute("dest", "welcome");
 			System.out.println("dir"+dir);
 			System.out.println("dest"+dest);
 			break;
@@ -91,13 +91,20 @@ public class MemberController extends HttpServlet {
 			memberService.joinMember(memberBean);
 			memberService.findMemberById(request.getParameter("id"));
 			System.out.println(">>>> 조회결과" + memberBean.toString());
-			request.setAttribute("member",memberBean);
+			session = request.getSession();
+			session.setAttribute("user",memberBean);
 			request.setAttribute("dest", request.getParameter("dest"));
 			break;
 		case "logout":
 			dir = "";
 			page = "index";
 			dest = "";
+			session.invalidate(); // 세션에서 값을 제거. = 로그아웃
+			break;
+		case "detail" :
+			request.setAttribute("dest", "detail");
+			/*id = request.getParameter("id");
+			request.setAttribute("member", memberService.findMemberById(id));*/
 			break;
 		}
 		Command.move(request, response, dir, page);

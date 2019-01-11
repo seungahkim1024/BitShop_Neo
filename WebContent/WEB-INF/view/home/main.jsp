@@ -21,6 +21,7 @@
 			<div id="content">
 			<%
 			String dest = request.getAttribute("dest").toString();
+			System.out.println("jsp에서 des===="+ dest);
 			switch(dest){
 			case "welcome": 
 			%>

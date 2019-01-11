@@ -23,18 +23,22 @@
 			System.out.println("dest :" + dest);
 			switch(dest){
 			case "NONE": 
-				%>
-				<%@ include file="mypage.jsp" %>
-				<%
+			
 				break;
 			case "join-form":
 				%>
 				<%@ include file="join-form.jsp" %>
 				<%
 				break;
-			case "lo": 
-				
+			case "detail": 
+				%>
+				<%@ include file="member-detail.jsp" %>
+				<%
 				break;
+			case "member-update":
+				%>
+				<%@ include file="member_update.jsp" %>
+				<%
 			}
 				%>
 		</td>
